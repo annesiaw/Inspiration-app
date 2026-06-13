@@ -84,14 +84,13 @@ export default function FactCard({ fact }) {
           </TouchableOpacity>
         </Animated.View>
 
-        {collapsed && (
-          <Animated.View style={[styles.fadeOverlay, { opacity: fadeAnim }]} pointerEvents="none">
-            <LinearGradient
-              colors={['transparent', '#001205', '#000A03']}
-              style={StyleSheet.absoluteFill}
-            />
-          </Animated.View>
-        )}
+        {/* Gradient fade — always mounted, opacity driven by animation */}
+        <Animated.View style={[styles.fadeOverlay, { opacity: fadeAnim }]} pointerEvents="none">
+          <LinearGradient
+            colors={['transparent', '#001205', '#000A03']}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
 
         <TouchableOpacity style={styles.toggleButton} onPress={toggle}>
           <View style={styles.toggleInner}>

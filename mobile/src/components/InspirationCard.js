@@ -86,15 +86,13 @@ export default function InspirationCard({ inspiration }) {
           </TouchableOpacity>
         </Animated.View>
 
-        {/* Gradient fade when collapsed */}
-        {collapsed && (
-          <Animated.View style={[styles.fadeOverlay, { opacity: fadeAnim }]} pointerEvents="none">
-            <LinearGradient
-              colors={['transparent', '#1C0A00', '#0D0500']}
-              style={StyleSheet.absoluteFill}
-            />
-          </Animated.View>
-        )}
+        {/* Gradient fade — always mounted, opacity driven by animation */}
+        <Animated.View style={[styles.fadeOverlay, { opacity: fadeAnim }]} pointerEvents="none">
+          <LinearGradient
+            colors={['transparent', '#1C0A00', '#0D0500']}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
 
         <TouchableOpacity style={styles.toggleButton} onPress={toggle}>
           <View style={styles.toggleInner}>
