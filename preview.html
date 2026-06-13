@@ -1,285 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Daily Inspiration — Preview</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  display: flex; flex-direction: column; align-items: center;
+  min-height: 100vh; padding: 40px 16px 60px; color: #FFF8E7;
+}
+.page-title { font-size: 11px; letter-spacing: 4px; color: #7A6040; margin-bottom: 32px; text-transform: uppercase; }
 
-  body {
-    background: #0a0a0a;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 40px 16px 60px;
-    color: #FFF8E7;
-  }
+/* Phone */
+.phone {
+  width: 375px; height: 812px; background: #0D0500;
+  border-radius: 48px; border: 2px solid #2A1800;
+  box-shadow: 0 0 0 6px #1a0a00, 0 0 0 8px #2A1800, 0 40px 80px rgba(0,0,0,0.8);
+  overflow: hidden; display: flex; flex-direction: column; position: relative;
+}
+.notch {
+  width: 120px; height: 28px; background: #0D0500;
+  border-radius: 0 0 18px 18px; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  z-index: 10; border: 2px solid #2A1800; border-top: none;
+}
+.status-bar {
+  display: flex; justify-content: space-between; padding: 14px 24px 4px;
+  font-size: 12px; color: #C9A96E; flex-shrink: 0;
+}
+.status-bar .time { font-weight: 700; }
 
-  .page-title {
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: #7A6040;
-    margin-bottom: 32px;
-    text-transform: uppercase;
-  }
+/* Screens */
+.screen { flex: 1; overflow-y: auto; scrollbar-width: none; padding-bottom: 8px; }
+.screen::-webkit-scrollbar { display: none; }
+.screen.hidden { display: none; }
 
-  /* Phone frame */
-  .phone {
-    width: 375px;
-    height: 812px;
-    background: #0D0500;
-    border-radius: 48px;
-    border: 2px solid #2A1800;
-    box-shadow:
-      0 0 0 6px #1a0a00,
-      0 0 0 8px #2A1800,
-      0 40px 80px rgba(0,0,0,0.8),
-      inset 0 0 40px rgba(0,0,0,0.4);
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-  }
+/* Tab bar */
+.tab-bar { display: flex; background: #1C0F00; border-top: 1px solid #3D2200; padding: 8px 0 16px; flex-shrink: 0; }
+.tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 4px 0; }
+.tab.active .tab-icon, .tab.active .tab-label { color: #D4AF37; }
+.tab-icon { font-size: 18px; color: #7A6040; transition: color 0.15s; }
+.tab-label { font-size: 9px; letter-spacing: 0.5px; color: #7A6040; font-weight: 600; transition: color 0.15s; }
 
-  .notch {
-    width: 120px; height: 28px;
-    background: #0D0500;
-    border-radius: 0 0 18px 18px;
-    position: absolute; top: 0; left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    border: 2px solid #2A1800;
-    border-top: none;
-  }
+/* Header */
+.header { display: flex; flex-direction: column; align-items: center; padding: 28px 0 12px; }
+.header-accent { width: 48px; height: 3px; background: #D4AF37; border-radius: 2px; margin-bottom: 14px; }
+.header-title { font-size: 11px; font-weight: 800; letter-spacing: 4px; color: #D4AF37; }
+.header-sub { font-size: 10px; letter-spacing: 2px; color: #C9A96E; margin-top: 4px; }
+.header-date { font-size: 12px; color: #7A6040; margin-top: 6px; font-style: italic; }
+.header-divider { display: flex; align-items: center; width: 80%; margin-top: 14px; gap: 8px; }
+.divider-line { flex: 1; height: 1px; background: #3D2200; }
+.divider-dot { color: #D4AF37; font-size: 9px; }
 
-  .status-bar {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 24px 4px;
-    font-size: 12px; color: #C9A96E;
-    flex-shrink: 0;
-  }
-  .status-bar .time { font-weight: 700; }
-  .status-icons { display: flex; gap: 6px; align-items: center; font-size: 11px; }
+/* Cards */
+.card-wrap { margin: 8px 16px; border-radius: 14px; }
+.card-inner { border-radius: 14px; padding: 18px 18px 8px; border-width: 1px; border-style: solid; }
+.card-body { max-height: 148px; overflow: hidden; transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1); }
+.fade-overlay { height: 52px; margin-top: -52px; position: relative; z-index: 1; pointer-events: none; transition: opacity 0.25s ease; }
+.toggle-btn {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  margin: 6px auto 2px; padding: 4px 14px; border-radius: 14px; border: 1px solid transparent;
+  background: transparent; cursor: pointer; font-size: 11px; letter-spacing: 1px;
+}
+.toggle-chevron { font-size: 11px; }
+.card-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.card-label-left { display: flex; align-items: center; gap: 6px; }
+.label-text { font-size: 9px; letter-spacing: 3px; font-weight: 700; }
+.heart-btn { cursor: pointer; font-size: 15px; transition: transform 0.15s; user-select: none; }
+.heart-btn:hover { transform: scale(1.2); }
 
-  /* Screen content */
-  .screen {
-    flex: 1;
-    overflow-y: auto;
-    scrollbar-width: none;
-    padding-bottom: 8px;
-  }
-  .screen::-webkit-scrollbar { display: none; }
-  .screen.hidden { display: none; }
+/* Inspiration card */
+.insp .card-inner { background: linear-gradient(135deg,#2A1200,#1C0A00,#0D0500); border-color: #3D2200; box-shadow: 0 4px 20px rgba(212,175,55,0.12); }
+.insp .fade-overlay { background: linear-gradient(to bottom, transparent, #1C0A00); }
+.insp .toggle-btn { color: #C9A96E; border-color: #3D2200; background: rgba(212,175,55,0.04); }
+.insp .toggle-chevron { color: #D4AF37; }
+.insp .label-text { color: #D4AF37; }
 
-  /* Tab bar */
-  .tab-bar {
-    display: flex;
-    background: #1C0F00;
-    border-top: 1px solid #3D2200;
-    padding: 8px 0 16px;
-    flex-shrink: 0;
-  }
-  .tab {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; gap: 3px;
-    cursor: pointer; padding: 4px 0; transition: opacity 0.15s;
-  }
-  .tab.active .tab-icon, .tab.active .tab-label { color: #D4AF37; }
-  .tab-icon { font-size: 20px; color: #7A6040; transition: color 0.15s; }
-  .tab-label { font-size: 10px; letter-spacing: 0.5px; color: #7A6040; font-weight: 600; transition: color 0.15s; }
+/* Figure card */
+.fig .card-inner { background: linear-gradient(135deg,#1A0000,#0D0000,#060000); border-color: #2A0000; box-shadow: 0 4px 20px rgba(206,17,38,0.10); }
+.fig .fade-overlay { background: linear-gradient(to bottom, transparent, #0D0000); }
+.fig .toggle-btn { color: #C9A96E; border-color: #2A0000; background: rgba(206,17,38,0.04); }
+.fig .toggle-chevron { color: #CE1126; }
+.fig .label-text { color: #CE1126; }
 
-  /* Header */
-  .header { display: flex; flex-direction: column; align-items: center; padding: 28px 0 12px; }
-  .header-accent { width: 48px; height: 3px; background: #D4AF37; border-radius: 2px; margin-bottom: 14px; }
-  .header-title { font-size: 11px; font-weight: 800; letter-spacing: 4px; color: #D4AF37; }
-  .header-sub { font-size: 10px; letter-spacing: 2px; color: #C9A96E; margin-top: 4px; }
-  .header-date { font-size: 12px; color: #7A6040; margin-top: 6px; font-style: italic; }
-  .header-divider { display: flex; align-items: center; width: 80%; margin-top: 14px; gap: 8px; }
-  .divider-line { flex: 1; height: 1px; background: #3D2200; }
-  .divider-dot { color: #D4AF37; font-size: 9px; }
+/* Fact card */
+.fact .card-inner { background: linear-gradient(135deg,#001A0A,#001205,#000A03); border-color: #001A08; box-shadow: 0 4px 20px rgba(0,154,68,0.10); }
+.fact .fade-overlay { background: linear-gradient(to bottom, transparent, #001205); }
+.fact .toggle-btn { color: #C9A96E; border-color: #001A08; background: rgba(0,154,68,0.04); }
+.fact .toggle-chevron { color: #009A44; }
+.fact .label-text { color: #009A44; }
 
-  /* ── Collapsible card base ── */
-  .card-wrap {
-    margin: 8px 16px;
-    border-radius: 14px;
-    overflow: hidden;
-    position: relative;
-  }
-  .card-inner {
-    border-radius: 14px;
-    padding: 20px 20px 8px;
-    border-width: 1px;
-    border-style: solid;
-  }
-  .card-body {
-    max-height: 148px;
-    overflow: hidden;
-    transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  /* Gradient fade — sits OUTSIDE card-body, overlaps it via negative margin */
-  .fade-overlay {
-    height: 56px;
-    margin-top: -56px;
-    position: relative;
-    z-index: 1;
-    pointer-events: none;
-    transition: opacity 0.25s ease;
-  }
-  /* Toggle button */
-  .toggle-btn {
-    display: flex; align-items: center; justify-content: center;
-    gap: 5px;
-    margin: 8px auto 4px;
-    padding: 5px 16px;
-    border-radius: 14px;
-    border: 1px solid transparent;
-    background: transparent;
-    cursor: pointer;
-    font-size: 11px;
-    letter-spacing: 1px;
-    transition: background 0.15s;
-  }
-  .toggle-chevron {
-    font-size: 11px;
-    transition: transform 0.3s ease;
-    display: inline-block;
-  }
+/* Quote */
+.big-quote { font-size: 56px; color: rgba(212,175,55,0.2); line-height: 0.7; float: left; font-family: Georgia,serif; margin-right: 2px; }
+.quote-text { font-size: 14px; line-height: 22px; color: #FFF8E7; font-style: italic; padding: 4px; }
+.close-quote { font-size: 56px; color: rgba(212,175,55,0.2); line-height: 0.4; float: right; font-family: Georgia,serif; margin-top: -10px; }
+.clearfix::after { content:''; display:block; clear:both; }
+.card-divider { height: 1px; background: #3D2200; margin: 10px 0; clear: both; }
+.author-name { font-size: 12px; font-weight: 700; color: #D4AF37; }
+.author-title { font-size: 10px; color: #C9A96E; margin-top: 2px; }
+.author-years { font-size: 10px; color: #7A6040; font-style: italic; margin-top: 1px; }
+.reflection-box { margin-top: 10px; padding: 9px 11px; background: rgba(212,175,55,0.07); border-radius: 8px; border-left: 2px solid #D4AF37; }
+.reflection-label { font-size: 8px; letter-spacing: 2px; color: #D4AF37; font-weight: 700; margin-bottom: 4px; }
+.reflection-text { font-size: 11px; line-height: 17px; color: #C9A96E; }
+.share-btn { float: right; margin-top: 10px; padding: 4px 11px; border-radius: 14px; font-size: 10px; cursor: pointer; background: transparent; transition: background 0.15s; border: 1px solid #D4AF37; color: #D4AF37; }
+.share-btn:hover { background: rgba(212,175,55,0.1); }
 
-  /* ── Inspiration card ── */
-  .insp-card .card-inner {
-    background: linear-gradient(135deg, #2A1200, #1C0A00, #0D0500);
-    border-color: #3D2200;
-    box-shadow: 0 4px 20px rgba(212,175,55,0.12);
-  }
-  .insp-card .fade-overlay {
-    background: linear-gradient(to bottom, transparent, #1C0A00);
-  }
-  .insp-card .toggle-btn {
-    color: #C9A96E;
-    border-color: #3D2200;
-    background: rgba(212,175,55,0.04);
-  }
-  .insp-card .toggle-btn:hover { background: rgba(212,175,55,0.09); }
-  .insp-card .toggle-chevron { color: #D4AF37; }
+/* Figure */
+.fig-accent { width: 36px; height: 2px; background: rgba(206,17,38,0.7); border-radius: 1px; margin-bottom: 10px; }
+.fig-name-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 3px; }
+.fig-name { font-size: 17px; font-weight: 800; color: #FFF8E7; line-height: 22px; flex: 1; }
+.field-badge { padding: 2px 8px; border-radius: 9px; font-size: 8px; font-weight: 800; letter-spacing: 1.5px; }
+.fig-lifespan { font-size: 10px; color: #7A6040; font-style: italic; margin-bottom: 10px; }
+.achievement-box { padding: 9px 11px; background: rgba(206,17,38,0.07); border-radius: 8px; border-left: 2px solid #CE1126; margin-bottom: 8px; }
+.achievement-label { font-size: 8px; letter-spacing: 2px; color: #CE1126; font-weight: 700; margin-bottom: 4px; }
+.achievement-text { font-size: 11px; line-height: 17px; color: #C9A96E; }
+.fun-fact-box { display: flex; gap: 6px; padding: 8px; background: rgba(255,255,255,0.02); border-radius: 7px; align-items: flex-start; }
+.fun-fact-text { font-size: 10px; line-height: 15px; color: #7A6040; font-style: italic; }
+.fig-share-btn { float: right; margin-top: 10px; padding: 4px 11px; border-radius: 14px; font-size: 10px; cursor: pointer; background: transparent; border: 1px solid #CE1126; color: #CE1126; transition: background 0.15s; }
+.fig-share-btn:hover { background: rgba(206,17,38,0.1); }
 
-  /* ── Fact card ── */
-  .fact-card .card-inner {
-    background: linear-gradient(135deg, #001A0A, #001205, #000A03);
-    border-color: #001A08;
-    box-shadow: 0 4px 20px rgba(0,154,68,0.10);
-  }
-  .fact-card .fade-overlay {
-    background: linear-gradient(to bottom, transparent, #001205);
-  }
-  .fact-card .toggle-btn {
-    color: #C9A96E;
-    border-color: #001A08;
-    background: rgba(0,154,68,0.04);
-  }
-  .fact-card .toggle-btn:hover { background: rgba(0,154,68,0.09); }
-  .fact-card .toggle-chevron { color: #009A44; }
+/* Fact */
+.fact-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.cat-badge { padding: 2px 8px; border-radius: 9px; font-size: 8px; font-weight: 800; letter-spacing: 1.5px; }
+.fact-top-right { display: flex; align-items: center; gap: 7px; }
+.green-accent { width: 36px; height: 2px; background: rgba(0,154,68,0.7); border-radius: 1px; margin-bottom: 10px; }
+.fact-title { font-size: 14px; font-weight: 700; color: #FFF8E7; line-height: 20px; margin-bottom: 7px; }
+.fact-body-text { font-size: 11px; line-height: 17px; color: #C9A96E; }
+.why-box { margin-top: 10px; padding: 9px 11px; background: rgba(0,154,68,0.07); border-radius: 8px; border-left: 2px solid #009A44; }
+.why-label { font-size: 8px; letter-spacing: 2px; color: #009A44; font-weight: 700; margin-bottom: 4px; }
+.why-text { font-size: 11px; line-height: 17px; color: #C9A96E; font-style: italic; }
+.fact-share-btn { float: right; margin-top: 10px; padding: 4px 11px; border-radius: 14px; font-size: 10px; cursor: pointer; background: transparent; border: 1px solid #009A44; color: #009A44; transition: background 0.15s; }
+.fact-share-btn:hover { background: rgba(0,154,68,0.1); }
 
-  /* Card content elements */
-  .card-label { display: flex; align-items: center; gap: 6px; font-size: 9px; letter-spacing: 3px; font-weight: 700; margin-bottom: 12px; }
-  .insp-card .card-label { color: #D4AF37; }
-  .fact-card .card-label { color: #009A44; }
+.footer-hint { text-align: center; color: #7A6040; font-size: 10px; letter-spacing: 1px; margin: 12px 0 4px; }
 
-  .big-quote {
-    font-size: 64px; color: rgba(212,175,55,0.2);
-    line-height: 0.7; float: left;
-    font-family: Georgia, serif; margin-right: 4px;
-  }
-  .quote-text {
-    font-size: 15px; line-height: 24px;
-    color: #FFF8E7; font-style: italic; font-weight: 500;
-    padding: 4px 4px 4px;
-  }
-  .close-quote {
-    font-size: 64px; color: rgba(212,175,55,0.2);
-    line-height: 0.4; float: right;
-    font-family: Georgia, serif; margin-top: -12px;
-  }
-  .clearfix::after { content: ''; display: block; clear: both; }
+/* Favorites screen */
+.fav-header { display:flex; flex-direction:column; align-items:center; padding: 28px 0 12px; }
+.fav-accent { width:36px; height:3px; background:#CE1126; border-radius:2px; margin-bottom:12px; }
+.fav-title { font-size:11px; font-weight:800; letter-spacing:4px; color:#FFF8E7; }
+.fav-sub { font-size:11px; color:#7A6040; margin-top:4px; }
+.filter-row { display:flex; padding:0 16px 8px; gap:7px; }
+.filter-chip { padding: 4px 10px; border-radius:12px; border:1px solid #3D2200; background:#1C0F00; font-size:10px; color:#7A6040; cursor:pointer; transition:all 0.15s; }
+.filter-chip.active { border-color:#D4AF37; background:rgba(212,175,55,0.12); color:#D4AF37; font-weight:700; }
+.fav-list { padding: 0 16px 32px; }
+.fav-item { display:flex; align-items:flex-start; justify-content:space-between; background:#1C0F00; border-radius:11px; padding:12px; margin-bottom:9px; border:1px solid #3D2200; }
+.fav-item-left { display:flex; gap:9px; flex:1; }
+.fav-item-icon { font-size:20px; margin-top:1px; }
+.fav-item-content { flex:1; }
+.fav-item-title { font-size:12px; font-weight:600; line-height:17px; margin-bottom:2px; }
+.fav-item-sub { font-size:10px; color:#7A6040; margin-bottom:3px; }
+.fav-item-date { font-size:9px; color:#7A6040; font-style:italic; }
+.fav-trash { font-size:13px; color:#7A6040; cursor:pointer; padding:3px; transition:color 0.15s; }
+.fav-trash:hover { color:#CE1126; }
+.fav-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 32px; }
+.fav-empty-icon { font-size:48px; color:#3D2200; margin-bottom:16px; }
+.fav-empty-title { font-size:15px; color:#C9A96E; font-weight:600; margin-bottom:8px; }
+.fav-empty-sub { font-size:12px; color:#7A6040; text-align:center; line-height:18px; }
 
-  .card-divider { height: 1px; background: #3D2200; margin: 12px 0; clear: both; }
-  .author-name { font-size: 13px; font-weight: 700; color: #D4AF37; }
-  .author-title { font-size: 11px; color: #C9A96E; margin-top: 2px; }
-  .author-years { font-size: 10px; color: #7A6040; font-style: italic; margin-top: 2px; }
+/* Archive screen */
+.arch-header { display:flex; flex-direction:column; align-items:center; padding:28px 0 12px; }
+.arch-accent { width:36px; height:3px; background:#D4AF37; border-radius:2px; margin-bottom:12px; }
+.arch-title { font-size:11px; font-weight:800; letter-spacing:4px; color:#FFF8E7; }
+.arch-sub { font-size:11px; color:#7A6040; margin-top:4px; }
+.arch-list { padding:0 16px 32px; }
+.arch-row { background:#1C0F00; border-radius:11px; margin-bottom:9px; border:1px solid #3D2200; overflow:hidden; }
+.arch-row-header { display:flex; justify-content:space-between; align-items:center; padding:13px 14px; cursor:pointer; }
+.arch-row-header:hover { background:rgba(255,255,255,0.02); }
+.arch-row-date { font-size:13px; color:#FFF8E7; font-weight:600; }
+.arch-row-hint { font-size:10px; color:#7A6040; margin-top:1px; }
+.arch-row-content { border-top:1px solid #3D2200; padding:12px; display:none; }
+.arch-row-content.open { display:block; }
+.arch-block { padding:8px; border-radius:7px; background:rgba(255,255,255,0.03); margin-bottom:8px; }
+.arch-block-label { font-size:8px; letter-spacing:2px; font-weight:700; margin-bottom:5px; }
+.arch-block-title { font-size:12px; font-weight:700; color:#FFF8E7; margin-bottom:1px; }
+.arch-block-sub { font-size:10px; color:#7A6040; font-style:italic; }
+.arch-block-quote { font-size:12px; color:#C9A96E; font-style:italic; line-height:17px; margin-bottom:3px; }
+.arch-block-author { font-size:10px; color:#D4AF37; }
 
-  .reflection-box {
-    margin-top: 12px; padding: 10px 12px;
-    background: rgba(212,175,55,0.07);
-    border-radius: 8px; border-left: 2px solid #D4AF37;
-  }
-  .reflection-label { font-size: 8px; letter-spacing: 2px; color: #D4AF37; font-weight: 700; margin-bottom: 5px; }
-  .reflection-text { font-size: 12px; line-height: 18px; color: #C9A96E; }
+/* Settings */
+.sett-header { display:flex; flex-direction:column; align-items:center; padding:28px 0 16px; }
+.sett-accent { width:36px; height:3px; background:#CE1126; border-radius:2px; margin-bottom:12px; }
+.sett-title { font-size:11px; font-weight:800; letter-spacing:4px; color:#FFF8E7; }
+.sett-section { margin:20px 18px 0; }
+.sett-section-label { font-size:9px; letter-spacing:3px; color:#7A6040; font-weight:700; margin-bottom:10px; }
+.sett-card { background:#1C0F00; border-radius:11px; border:1px solid #3D2200; overflow:hidden; }
+.sett-row { display:flex; align-items:center; justify-content:space-between; padding:13px; border-bottom:1px solid #3D2200; }
+.sett-row:last-child { border-bottom:none; }
+.sett-row-label { font-size:13px; color:#FFF8E7; font-weight:600; }
+.sett-row-sub { font-size:10px; color:#7A6040; margin-top:2px; }
+.sett-toggle { width:40px; height:24px; background:#D4AF37; border-radius:12px; position:relative; cursor:pointer; flex-shrink:0; }
+.sett-toggle .thumb { width:20px; height:20px; background:#FFD700; border-radius:10px; position:absolute; top:2px; right:2px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:right 0.2s,left 0.2s; }
+.sett-toggle.off { background:#3D2200; }
+.sett-toggle.off .thumb { right:auto; left:2px; background:#7A6040; }
+.time-value { font-size:13px; color:#D4AF37; font-weight:700; cursor:pointer; }
+.sett-hint { font-size:10px; color:#7A6040; margin-top:7px; font-style:italic; line-height:14px; }
+.about-card { background:#1C0F00; border-radius:11px; border:1px solid #3D2200; padding:13px; }
+.about-title { font-size:14px; font-weight:700; color:#D4AF37; margin-bottom:2px; }
+.about-sub { font-size:10px; color:#009A44; letter-spacing:1px; margin-bottom:8px; }
+.about-body { font-size:11px; line-height:17px; color:#C9A96E; }
+.tag-cloud { display:flex; flex-wrap:wrap; gap:6px; }
+.tag { padding:3px 9px; border-radius:11px; background:#2A1800; border:1px solid #3D2200; font-size:9px; color:#C9A96E; letter-spacing:0.5px; }
+.sett-version { text-align:center; color:#7A6040; font-size:10px; margin:24px 0 8px; }
 
-  .share-btn, .fact-share-btn {
-    float: right; margin-top: 12px;
-    padding: 5px 12px; border-radius: 16px;
-    font-size: 10px; letter-spacing: 1px;
-    cursor: pointer; background: transparent; transition: background 0.15s;
-  }
-  .share-btn { border: 1px solid #D4AF37; color: #D4AF37; }
-  .share-btn:hover { background: rgba(212,175,55,0.1); }
-  .fact-share-btn { border: 1px solid #009A44; color: #009A44; }
-  .fact-share-btn:hover { background: rgba(0,154,68,0.1); }
+/* Time picker modal */
+.time-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:flex-end; z-index:50; }
+.time-modal.open { display:flex; }
+.time-modal-inner { background:#1C0F00; border-radius:16px 16px 0 0; padding:20px; width:375px; border:1px solid #3D2200; }
+.time-modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.time-modal-title { font-size:14px; color:#FFF8E7; font-weight:600; }
+.time-modal-done { font-size:14px; color:#D4AF37; font-weight:700; cursor:pointer; }
+.time-inputs { display:flex; align-items:center; justify-content:center; gap:12px; }
+.time-input { background:#0D0500; border:1px solid #3D2200; border-radius:8px; padding:10px 14px; font-size:24px; color:#D4AF37; font-weight:700; width:72px; text-align:center; outline:none; }
+.time-colon { font-size:24px; color:#D4AF37; font-weight:700; }
+.time-ampm { display:flex; flex-direction:column; gap:4px; }
+.ampm-btn { padding:4px 10px; border-radius:6px; border:1px solid #3D2200; font-size:11px; color:#7A6040; cursor:pointer; text-align:center; }
+.ampm-btn.active { border-color:#D4AF37; color:#D4AF37; background:rgba(212,175,55,0.1); }
 
-  /* Fact card internals */
-  .fact-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .cat-badge { padding: 3px 9px; border-radius: 10px; font-size: 8px; font-weight: 800; letter-spacing: 1.5px; }
-  .green-accent { width: 36px; height: 2px; background: rgba(0,154,68,0.7); border-radius: 1px; margin-bottom: 10px; }
-  .fact-title { font-size: 15px; font-weight: 700; color: #FFF8E7; line-height: 21px; margin-bottom: 8px; }
-  .fact-body { font-size: 12px; line-height: 19px; color: #C9A96E; }
-  .why-box {
-    margin-top: 12px; padding: 10px 12px;
-    background: rgba(0,154,68,0.07);
-    border-radius: 8px; border-left: 2px solid #009A44;
-  }
-  .why-label { font-size: 8px; letter-spacing: 2px; color: #009A44; font-weight: 700; margin-bottom: 5px; }
-  .why-text { font-size: 12px; line-height: 18px; color: #C9A96E; font-style: italic; }
-
-  .footer-hint { text-align: center; color: #7A6040; font-size: 10px; letter-spacing: 1px; margin: 14px 0 4px; }
-
-  /* Settings */
-  .settings-header { display: flex; flex-direction: column; align-items: center; padding: 28px 0 16px; }
-  .settings-accent { width: 36px; height: 3px; background: #CE1126; border-radius: 2px; margin-bottom: 12px; }
-  .settings-title { font-size: 11px; font-weight: 800; letter-spacing: 4px; color: #FFF8E7; }
-  .settings-section { margin: 20px 20px 0; }
-  .section-label { font-size: 9px; letter-spacing: 3px; color: #7A6040; font-weight: 700; margin-bottom: 10px; }
-  .settings-row {
-    display: flex; align-items: center; justify-content: space-between;
-    background: #1C0F00; border-radius: 10px; padding: 14px;
-    border: 1px solid #3D2200;
-  }
-  .row-text .row-label { font-size: 14px; color: #FFF8E7; font-weight: 600; }
-  .row-text .row-sub { font-size: 11px; color: #7A6040; margin-top: 2px; }
-  .toggle { width: 44px; height: 26px; background: #D4AF37; border-radius: 13px; position: relative; cursor: pointer; transition: background 0.2s; }
-  .toggle .thumb { width: 22px; height: 22px; background: #FFD700; border-radius: 11px; position: absolute; top: 2px; right: 2px; box-shadow: 0 1px 4px rgba(0,0,0,0.4); transition: right 0.2s, left 0.2s; }
-  .toggle.off { background: #3D2200; }
-  .toggle.off .thumb { right: auto; left: 2px; background: #7A6040; }
-  .settings-hint { font-size: 10px; color: #7A6040; margin-top: 8px; font-style: italic; line-height: 15px; }
-  .about-card { background: #1C0F00; border-radius: 10px; padding: 14px; border: 1px solid #3D2200; }
-  .about-card-title { font-size: 15px; font-weight: 700; color: #D4AF37; margin-bottom: 2px; }
-  .about-card-sub { font-size: 10px; color: #009A44; letter-spacing: 1px; margin-bottom: 10px; }
-  .about-card-body { font-size: 12px; line-height: 18px; color: #C9A96E; }
-  .tag-cloud { display: flex; flex-wrap: wrap; gap: 7px; }
-  .tag { padding: 4px 10px; border-radius: 12px; background: #2A1800; border: 1px solid #3D2200; font-size: 10px; color: #C9A96E; letter-spacing: 0.5px; }
-  .version { text-align: center; color: #7A6040; font-size: 10px; margin: 28px 0 8px; }
-
-  .toast {
-    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-    background: #1C0F00; border: 1px solid #D4AF37;
-    border-radius: 12px; padding: 12px 20px;
-    font-size: 12px; color: #D4AF37; letter-spacing: 0.5px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-    opacity: 0; transition: opacity 0.3s;
-    pointer-events: none; white-space: nowrap; z-index: 100;
-  }
-  .toast.show { opacity: 1; }
+.toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#1C0F00; border:1px solid #D4AF37; border-radius:11px; padding:11px 18px; font-size:12px; color:#D4AF37; box-shadow:0 8px 32px rgba(0,0,0,0.6); opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; z-index:100; }
+.toast.show { opacity:1; }
 </style>
 </head>
 <body>
@@ -288,35 +227,31 @@
 
 <div class="phone">
   <div class="notch"></div>
-
   <div class="status-bar">
     <span class="time">9:41</span>
-    <div class="status-icons"><span>●●●●</span><span>WiFi</span><span>🔋</span></div>
+    <div style="display:flex;gap:6px;align-items:center;font-size:11px"><span>●●●●</span><span>WiFi</span><span>🔋</span></div>
   </div>
 
-  <!-- HOME SCREEN -->
+  <!-- ══ HOME ══ -->
   <div class="screen" id="screen-home">
     <div class="header">
       <div class="header-accent"></div>
       <div class="header-title">DAILY INSPIRATION</div>
       <div class="header-sub">Black Culture · History · Achievement</div>
       <div class="header-date">Friday, June 13, 2026</div>
-      <div class="header-divider">
-        <div class="divider-line"></div>
-        <span class="divider-dot">✦</span>
-        <div class="divider-line"></div>
-      </div>
+      <div class="header-divider"><div class="divider-line"></div><span class="divider-dot">✦</span><div class="divider-line"></div></div>
     </div>
 
-    <!-- Inspiration Card (collapsible) -->
-    <div class="card-wrap insp-card">
+    <!-- Inspiration Card -->
+    <div class="card-wrap insp">
       <div class="card-inner">
-        <div class="card-label"><span>✊🏾</span><span>TODAY'S INSPIRATION</span></div>
+        <div class="card-label">
+          <div class="card-label-left"><span style="font-size:13px">✊🏾</span><span class="label-text">TODAY'S INSPIRATION</span></div>
+          <span class="heart-btn" onclick="toggleHeart(this,'insp')" title="Save to Favorites">♡</span>
+        </div>
         <div class="card-body" id="insp-body">
           <div class="big-quote">"</div>
-          <p class="quote-text">
-            You may encounter many defeats, but you must not be defeated. In fact, it may be necessary to encounter the defeats, so you can know who you are, what you can rise from, how you can still come out of it.
-          </p>
+          <p class="quote-text">You may encounter many defeats, but you must not be defeated. In fact, it may be necessary to encounter the defeats, so you can know who you are, what you can rise from, how you can still come out of it.</p>
           <div class="close-quote">"</div>
           <div class="clearfix"></div>
           <div class="card-divider"></div>
@@ -325,99 +260,241 @@
           <div class="author-years">1928–2014</div>
           <div class="reflection-box">
             <div class="reflection-label">REFLECTION</div>
-            <div class="reflection-text">Every setback you face carries a lesson about your own resilience. Today, name one thing you rose from — and let it remind you of the strength already inside you.</div>
+            <div class="reflection-text">Every setback carries a lesson about your resilience. Name one thing you've risen from — and let it remind you of the strength already inside you.</div>
           </div>
-          <div class="clearfix">
-            <button class="share-btn" onclick="showToast('Copied to clipboard ✓')">Share This</button>
-          </div>
-          <div style="clear:both;height:8px"></div>
+          <div class="clearfix"><button class="share-btn" onclick="showToast('Shared ✓')">↗ Share</button></div>
+          <div style="clear:both;height:6px"></div>
         </div>
         <div class="fade-overlay" id="insp-fade"></div>
-        <button class="toggle-btn" id="insp-toggle-btn" onclick="toggleCard('insp')">
-          <span id="insp-toggle-label">Read More</span>
-          <span class="toggle-chevron" id="insp-chevron">▾</span>
+        <button class="toggle-btn" onclick="toggleCard('insp')" style="color:#C9A96E;border-color:#3D2200;">
+          <span id="insp-label">Read More</span> <span class="toggle-chevron" id="insp-chev">▾</span>
         </button>
       </div>
     </div>
 
-    <!-- Fact Card (collapsible) -->
-    <div class="card-wrap fact-card">
+    <!-- Figure Card -->
+    <div class="card-wrap fig">
+      <div class="card-inner">
+        <div class="card-label">
+          <div class="card-label-left"><span style="font-size:13px">🌟</span><span class="label-text">FIGURE OF THE DAY</span></div>
+          <span class="heart-btn" onclick="toggleHeart(this,'fig')" title="Save to Favorites">♡</span>
+        </div>
+        <div class="card-body" id="fig-body">
+          <div class="fig-accent"></div>
+          <div class="fig-name-row">
+            <div class="fig-name">Katherine Johnson</div>
+            <div class="field-badge" style="background:#00213D;color:#42C8FF">SCIENCE</div>
+          </div>
+          <div class="fig-lifespan">1918–2020 · NASA mathematician and aerospace technologist</div>
+          <div class="achievement-box">
+            <div class="achievement-label">ACHIEVEMENT</div>
+            <div class="achievement-text">Katherine Johnson's precise orbital mechanics calculations were crucial to NASA's early space missions. John Glenn refused to fly unless Johnson personally verified the computer's calculations before his 1962 orbital flight.</div>
+          </div>
+          <div class="fun-fact-box">
+            <span>💡</span>
+            <div class="fun-fact-text">She calculated trajectories by hand so accurately that her work remained indispensable even after NASA introduced electronic computers.</div>
+          </div>
+          <div class="clearfix"><button class="fig-share-btn" onclick="showToast('Shared ✓')">↗ Share</button></div>
+          <div style="clear:both;height:6px"></div>
+        </div>
+        <div class="fade-overlay" id="fig-fade"></div>
+        <button class="toggle-btn" onclick="toggleCard('fig')" style="color:#C9A96E;border-color:#2A0000;">
+          <span id="fig-label">Read More</span> <span class="toggle-chevron" id="fig-chev">▾</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Fact Card -->
+    <div class="card-wrap fact">
       <div class="card-inner">
         <div class="fact-top">
-          <div class="card-label"><span>📚</span><span>TODAY'S LESSON</span></div>
-          <div class="cat-badge" style="background:#3D0000;color:#FF8080;">HISTORY</div>
+          <div class="card-label-left"><span style="font-size:13px">📚</span><span class="label-text" style="color:#009A44">TODAY'S LESSON</span></div>
+          <div class="fact-top-right">
+            <div class="cat-badge" style="background:#3D0000;color:#FF8080">HISTORY</div>
+            <span class="heart-btn" onclick="toggleHeart(this,'fact')" title="Save to Favorites">♡</span>
+          </div>
         </div>
         <div class="card-body" id="fact-body">
           <div class="green-accent"></div>
           <div class="fact-title">The Underground Railroad: Freedom's Secret Network</div>
-          <div class="fact-body-text fact-body">
-            The Underground Railroad was not a literal railroad but a vast, clandestine network of safe houses, secret routes, and brave conductors that helped enslaved African Americans escape to freedom between the 1780s and 1860s. Harriet Tubman — herself an escaped enslaved woman — made 13 dangerous missions back into the South, guiding approximately 70 people to freedom. She never lost a single passenger, earning her the name "Moses of her People."
-          </div>
+          <div class="fact-body-text">The Underground Railroad was not a literal railroad but a vast, clandestine network of safe houses, secret routes, and brave conductors that helped enslaved African Americans escape to freedom between the 1780s and 1860s. Harriet Tubman made 13 dangerous missions back into the South, guiding approximately 70 people to freedom and never losing a single passenger.</div>
           <div class="why-box">
             <div class="why-label">WHY IT MATTERS</div>
-            <div class="why-text">The Underground Railroad stands as one of history's greatest acts of collective resistance — proof that ordinary people, acting with extraordinary courage, can dismantle systems of oppression.</div>
+            <div class="why-text">It stands as one of history's greatest acts of collective resistance — proof that ordinary people, acting with extraordinary courage, can dismantle systems of oppression.</div>
           </div>
-          <div class="clearfix">
-            <button class="fact-share-btn" onclick="showToast('Copied to clipboard ✓')">Share This</button>
-          </div>
-          <div style="clear:both;height:8px"></div>
+          <div class="clearfix"><button class="fact-share-btn" onclick="showToast('Shared ✓')">↗ Share</button></div>
+          <div style="clear:both;height:6px"></div>
         </div>
         <div class="fade-overlay" id="fact-fade"></div>
-        <button class="toggle-btn" id="fact-toggle-btn" onclick="toggleCard('fact')">
-          <span id="fact-toggle-label">Read More</span>
-          <span class="toggle-chevron" id="fact-chevron">▾</span>
+        <button class="toggle-btn" onclick="toggleCard('fact')" style="color:#C9A96E;border-color:#001A08;">
+          <span id="fact-label">Read More</span> <span class="toggle-chevron" id="fact-chev">▾</span>
         </button>
       </div>
     </div>
-
-    <div class="footer-hint">Pull down to refresh</div>
+    <div class="footer-hint">Pull down to refresh · Tap ♡ to save</div>
   </div>
 
-  <!-- SETTINGS SCREEN -->
+  <!-- ══ FAVORITES ══ -->
+  <div class="screen hidden" id="screen-favorites">
+    <div class="fav-header">
+      <div class="fav-accent"></div>
+      <div class="fav-title">FAVORITES</div>
+      <div class="fav-sub" id="fav-count">0 saved items</div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-chip active" onclick="filterFavs('all',this)">All</div>
+      <div class="filter-chip" onclick="filterFavs('insp',this)">✊🏾</div>
+      <div class="filter-chip" onclick="filterFavs('fig',this)">🌟</div>
+      <div class="filter-chip" onclick="filterFavs('fact',this)">📚</div>
+    </div>
+    <div class="fav-list" id="fav-list">
+      <div class="fav-empty" id="fav-empty">
+        <div class="fav-empty-icon">♡</div>
+        <div class="fav-empty-title">Nothing saved yet</div>
+        <div class="fav-empty-sub">Tap ♡ on any quote, figure, or lesson on the Home screen to save it here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ARCHIVE ══ -->
+  <div class="screen hidden" id="screen-archive">
+    <div class="arch-header">
+      <div class="arch-accent"></div>
+      <div class="arch-title">ARCHIVE</div>
+      <div class="arch-sub">Past 3 days (demo)</div>
+    </div>
+    <div class="arch-list">
+      <div class="arch-row">
+        <div class="arch-row-header" onclick="toggleArchive(this)">
+          <div><div class="arch-row-date">Thursday, June 12, 2026</div><div class="arch-row-hint">Tap to read</div></div>
+          <span>▾</span>
+        </div>
+        <div class="arch-row-content">
+          <div class="arch-block">
+            <div class="arch-block-label" style="color:#D4AF37">✊🏾 INSPIRATION</div>
+            <div class="arch-block-quote">"No person is your friend who demands your silence, or denies your right to grow."</div>
+            <div class="arch-block-author">— Alice Walker</div>
+          </div>
+          <div class="arch-block" style="background:rgba(206,17,38,0.05)">
+            <div class="arch-block-label" style="color:#CE1126">🌟 FIGURE</div>
+            <div class="arch-block-title">Ida B. Wells</div>
+            <div class="arch-block-sub">1862–1931 · Civil Rights</div>
+          </div>
+          <div class="arch-block" style="background:rgba(0,154,68,0.05)">
+            <div class="arch-block-label" style="color:#009A44">📚 LESSON</div>
+            <div class="arch-block-title">The Tulsa Race Massacre of 1921</div>
+            <div class="arch-block-sub">History</div>
+          </div>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-row-header" onclick="toggleArchive(this)">
+          <div><div class="arch-row-date">Wednesday, June 11, 2026</div><div class="arch-row-hint">Tap to read</div></div>
+          <span>▾</span>
+        </div>
+        <div class="arch-row-content">
+          <div class="arch-block">
+            <div class="arch-block-label" style="color:#D4AF37">✊🏾 INSPIRATION</div>
+            <div class="arch-block-quote">"I am not afraid of storms, for I am learning how to sail my ship."</div>
+            <div class="arch-block-author">— Louisa May Alcott (as quoted by Frederick Douglass)</div>
+          </div>
+          <div class="arch-block" style="background:rgba(206,17,38,0.05)">
+            <div class="arch-block-label" style="color:#CE1126">🌟 FIGURE</div>
+            <div class="arch-block-title">Marcus Garvey</div>
+            <div class="arch-block-sub">1887–1940 · Politics</div>
+          </div>
+          <div class="arch-block" style="background:rgba(0,154,68,0.05)">
+            <div class="arch-block-label" style="color:#009A44">📚 LESSON</div>
+            <div class="arch-block-title">Mali Empire & Mansa Musa's Pilgrimage</div>
+            <div class="arch-block-sub">History</div>
+          </div>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-row-header" onclick="toggleArchive(this)">
+          <div><div class="arch-row-date">Tuesday, June 10, 2026</div><div class="arch-row-hint">Tap to read</div></div>
+          <span>▾</span>
+        </div>
+        <div class="arch-row-content">
+          <div class="arch-block">
+            <div class="arch-block-label" style="color:#D4AF37">✊🏾 INSPIRATION</div>
+            <div class="arch-block-quote">"The most common way people give up their power is by thinking they don't have any."</div>
+            <div class="arch-block-author">— Alice Walker</div>
+          </div>
+          <div class="arch-block" style="background:rgba(206,17,38,0.05)">
+            <div class="arch-block-label" style="color:#CE1126">🌟 FIGURE</div>
+            <div class="arch-block-title">Shirley Chisholm</div>
+            <div class="arch-block-sub">1924–2005 · Politics</div>
+          </div>
+          <div class="arch-block" style="background:rgba(0,154,68,0.05)">
+            <div class="arch-block-label" style="color:#009A44">📚 LESSON</div>
+            <div class="arch-block-title">The Harlem Renaissance</div>
+            <div class="arch-block-sub">Culture</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SETTINGS ══ -->
   <div class="screen hidden" id="screen-settings">
-    <div class="settings-header">
-      <div class="settings-accent"></div>
-      <div class="settings-title">SETTINGS</div>
-    </div>
-    <div class="settings-section">
-      <div class="section-label">NOTIFICATIONS</div>
-      <div class="settings-row">
-        <div class="row-text">
-          <div class="row-label">Daily Inspiration</div>
-          <div class="row-sub">Receive your morning message every day</div>
+    <div class="sett-header"><div class="sett-accent"></div><div class="sett-title">SETTINGS</div></div>
+    <div class="sett-section">
+      <div class="sett-section-label">NOTIFICATIONS</div>
+      <div class="sett-card">
+        <div class="sett-row">
+          <div><div class="sett-row-label">Daily Inspiration</div><div class="sett-row-sub">Push a daily message to this device</div></div>
+          <div class="sett-toggle" id="sett-toggle" onclick="toggleNotif()"><div class="thumb"></div></div>
         </div>
-        <div class="toggle" id="toggle" onclick="toggleSwitch()"><div class="thumb"></div></div>
+        <div class="sett-row" onclick="openTimePicker()" style="cursor:pointer">
+          <div><div class="sett-row-label">Notification Time</div><div class="sett-row-sub">Tap to change your daily reminder</div></div>
+          <div class="time-value" id="time-display">8:00 AM</div>
+        </div>
       </div>
-      <div class="settings-hint">Notifications are sent at 8 AM daily, curated from Black history, culture, and achievement.</div>
+      <div class="sett-hint">Notifications are scheduled locally on your device at the time you choose.</div>
     </div>
-    <div class="settings-section">
-      <div class="section-label">ABOUT</div>
+    <div class="sett-section">
+      <div class="sett-section-label">ABOUT</div>
       <div class="about-card">
-        <div class="about-card-title">Daily Inspiration</div>
-        <div class="about-card-sub">Black Culture · History · Achievement</div>
-        <div class="about-card-body">
-          This app celebrates the richness of Black history and the African diaspora. Each day, you receive an inspirational quote from a Black luminary and a curated lesson from Black history, art, music, science, and culture.<br><br>
-          Content is generated fresh daily using Claude AI, drawing on the full breadth of Black achievement across centuries and continents.
-        </div>
+        <div class="about-title">Daily Inspiration</div>
+        <div class="about-sub">Black Culture · History · Achievement</div>
+        <div class="about-body">A daily celebration of Black history and the African diaspora. Each day: an inspirational quote, a spotlight on a notable figure, and a cultural lesson — all AI-generated to cover the full breadth of Black achievement across centuries.</div>
       </div>
     </div>
-    <div class="settings-section">
-      <div class="section-label">CONTENT AREAS</div>
+    <div class="sett-section">
+      <div class="sett-section-label">CONTENT AREAS</div>
       <div class="tag-cloud">
         <div class="tag">History</div><div class="tag">Music</div><div class="tag">Art</div>
         <div class="tag">Science</div><div class="tag">Literature</div><div class="tag">Sports</div>
         <div class="tag">Culture</div><div class="tag">Fashion</div><div class="tag">Food</div><div class="tag">Politics</div>
       </div>
     </div>
-    <div class="version">Version 1.0.0</div>
+    <div class="sett-version">Version 1.0.0</div>
   </div>
 
   <div class="tab-bar">
-    <div class="tab active" id="tab-home" onclick="switchTab('home')">
-      <span class="tab-icon">⌂</span><span class="tab-label">Home</span>
+    <div class="tab active" id="tab-home" onclick="switchTab('home')"><span class="tab-icon">⌂</span><span class="tab-label">Home</span></div>
+    <div class="tab" id="tab-favorites" onclick="switchTab('favorites')"><span class="tab-icon">♡</span><span class="tab-label">Favorites</span></div>
+    <div class="tab" id="tab-archive" onclick="switchTab('archive')"><span class="tab-icon">⏱</span><span class="tab-label">Archive</span></div>
+    <div class="tab" id="tab-settings" onclick="switchTab('settings')"><span class="tab-icon">⚙</span><span class="tab-label">Settings</span></div>
+  </div>
+</div>
+
+<!-- Time Picker Modal -->
+<div class="time-modal" id="time-modal">
+  <div class="time-modal-inner">
+    <div class="time-modal-header">
+      <div class="time-modal-title">Choose notification time</div>
+      <div class="time-modal-done" onclick="closeTimePicker()">Done</div>
     </div>
-    <div class="tab" id="tab-settings" onclick="switchTab('settings')">
-      <span class="tab-icon">⚙</span><span class="tab-label">Settings</span>
+    <div class="time-inputs">
+      <input class="time-input" id="t-hour" type="number" min="1" max="12" value="8" onchange="updateTime()"/>
+      <span class="time-colon">:</span>
+      <input class="time-input" id="t-min" type="number" min="0" max="59" value="0" step="5" onchange="updateTime()"/>
+      <div class="time-ampm">
+        <div class="ampm-btn active" id="am-btn" onclick="setAMPM('AM')">AM</div>
+        <div class="ampm-btn" id="pm-btn" onclick="setAMPM('PM')">PM</div>
+      </div>
     </div>
   </div>
 </div>
@@ -425,65 +502,172 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const COLLAPSED_HEIGHT = '148px';
-
-  const state = { insp: false, fact: false }; // false = collapsed
-
-  function initCards() {
-    ['insp', 'fact'].forEach(id => {
-      const body = document.getElementById(id + '-body');
-      body.style.maxHeight = COLLAPSED_HEIGHT;
-    });
+// ── Card collapse ──
+const collapsed = { insp: true, fig: true, fact: true };
+function toggleCard(id) {
+  const body = document.getElementById(id+'-body');
+  const fade = document.getElementById(id+'-fade');
+  const label = document.getElementById(id+'-label');
+  const chev = document.getElementById(id+'-chev');
+  collapsed[id] = !collapsed[id];
+  if (!collapsed[id]) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    fade.style.opacity = '0';
+    label.textContent = 'Collapse';
+    chev.textContent = '▴';
+  } else {
+    body.style.maxHeight = '148px';
+    fade.style.opacity = '1';
+    label.textContent = 'Read More';
+    chev.textContent = '▾';
   }
+}
 
-  function toggleCard(id) {
-    const body = document.getElementById(id + '-body');
-    const fade = document.getElementById(id + '-fade');
-    const label = document.getElementById(id + '-toggle-label');
-    const chevron = document.getElementById(id + '-chevron');
+// ── Favorites ──
+const favData = {};  // id → { icon, title, sub, type }
+const FAV_DEFS = {
+  insp: { icon: '✊🏾', title: '"You may encounter many defeats, but you must not be defeated…"', sub: '— Maya Angelou', type: 'inspiration', color: '#D4AF37' },
+  fig:  { icon: '🌟', title: 'Katherine Johnson', sub: '1918–2020 · Science', type: 'figure', color: '#CE1126' },
+  fact: { icon: '📚', title: 'The Underground Railroad: Freedom\'s Secret Network', sub: 'History', type: 'fact', color: '#009A44' },
+};
 
-    state[id] = !state[id];
+function toggleHeart(el, id) {
+  if (favData[id]) {
+    delete favData[id];
+    el.textContent = '♡';
+    el.style.color = '';
+    showToast('Removed from Favorites');
+  } else {
+    favData[id] = FAV_DEFS[id];
+    el.textContent = '♥';
+    el.style.color = '#CE1126';
+    showToast('Saved to Favorites ♥');
+  }
+  renderFavs('all');
+}
 
-    if (state[id]) {
-      // Expand
-      body.style.maxHeight = body.scrollHeight + 'px';
-      fade.style.opacity = '0';
-      label.textContent = 'Collapse';
-      chevron.textContent = '▴';
-    } else {
-      // Collapse
-      body.style.maxHeight = COLLAPSED_HEIGHT;
-      fade.style.opacity = '1';
-      label.textContent = 'Read More';
-      chevron.textContent = '▾';
+let currentFilter = 'all';
+function filterFavs(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderFavs(f);
+}
+
+function renderFavs(f) {
+  const list = document.getElementById('fav-list');
+  const empty = document.getElementById('fav-empty');
+  const count = document.getElementById('fav-count');
+  const all = Object.entries(favData);
+  const filtered = f === 'all' ? all : all.filter(([,v]) =>
+    f === 'insp' ? v.type === 'inspiration' : f === 'fig' ? v.type === 'figure' : v.type === 'fact'
+  );
+  count.textContent = `${all.length} saved item${all.length !== 1 ? 's' : ''}`;
+  // Remove existing items
+  list.querySelectorAll('.fav-item').forEach(e => e.remove());
+  if (filtered.length === 0) {
+    empty.style.display = 'flex';
+    return;
+  }
+  empty.style.display = 'none';
+  filtered.forEach(([id, v]) => {
+    const el = document.createElement('div');
+    el.className = 'fav-item';
+    el.id = 'fav-item-' + id;
+    el.innerHTML = `
+      <div class="fav-item-left">
+        <div class="fav-item-icon">${v.icon}</div>
+        <div class="fav-item-content">
+          <div class="fav-item-title" style="color:${v.color}">${v.title}</div>
+          <div class="fav-item-sub">${v.sub}</div>
+          <div class="fav-item-date">Saved today · 2026-06-13</div>
+        </div>
+      </div>
+      <div class="fav-trash" onclick="removeFav('${id}')">🗑</div>`;
+    list.appendChild(el);
+  });
+}
+
+function removeFav(id) {
+  if (!confirm('Remove from favorites?')) return;
+  delete favData[id];
+  // Un-heart on home screen
+  const hearts = document.querySelectorAll('.heart-btn');
+  hearts.forEach(h => {
+    if (h.onclick.toString().includes(`'${id}'`)) {
+      h.textContent = '♡'; h.style.color = '';
     }
-  }
+  });
+  renderFavs(currentFilter);
+  showToast('Removed from Favorites');
+}
 
-  function switchTab(name) {
-    document.getElementById('screen-home').classList.add('hidden');
-    document.getElementById('screen-settings').classList.add('hidden');
-    document.getElementById('screen-' + name).classList.remove('hidden');
-    document.getElementById('tab-home').classList.remove('active');
-    document.getElementById('tab-settings').classList.remove('active');
-    document.getElementById('tab-' + name).classList.add('active');
+// ── Archive accordion ──
+function toggleArchive(header) {
+  const content = header.nextElementSibling;
+  const chevron = header.querySelector('span:last-child');
+  const hint = header.querySelector('.arch-row-hint');
+  const isOpen = content.classList.contains('open');
+  document.querySelectorAll('.arch-row-content.open').forEach(c => {
+    c.classList.remove('open');
+    c.previousElementSibling.querySelector('span:last-child').textContent = '▾';
+    c.previousElementSibling.querySelector('.arch-row-hint').textContent = 'Tap to read';
+  });
+  if (!isOpen) {
+    content.classList.add('open');
+    chevron.textContent = '▴';
+    hint.textContent = 'Tap to close';
   }
+}
 
-  let notifOn = true;
-  function toggleSwitch() {
-    notifOn = !notifOn;
-    const t = document.getElementById('toggle');
-    t.classList.toggle('off', !notifOn);
-    showToast(notifOn ? '🔔 Notifications enabled' : '🔕 Notifications off');
-  }
+// ── Tab navigation ──
+function switchTab(name) {
+  ['home','favorites','archive','settings'].forEach(s => {
+    document.getElementById('screen-'+s).classList.add('hidden');
+    document.getElementById('tab-'+s).classList.remove('active');
+  });
+  document.getElementById('screen-'+name).classList.remove('hidden');
+  document.getElementById('tab-'+name).classList.add('active');
+  if (name === 'favorites') renderFavs(currentFilter);
+}
 
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2000);
-  }
+// ── Settings ──
+let notifOn = true;
+function toggleNotif() {
+  notifOn = !notifOn;
+  document.getElementById('sett-toggle').classList.toggle('off', !notifOn);
+  showToast(notifOn ? '🔔 Notifications enabled' : '🔕 Notifications off');
+}
 
-  initCards();
+let ampm = 'AM';
+function openTimePicker() { document.getElementById('time-modal').classList.add('open'); }
+function closeTimePicker() {
+  document.getElementById('time-modal').classList.remove('open');
+  updateTime();
+}
+function setAMPM(v) {
+  ampm = v;
+  document.getElementById('am-btn').classList.toggle('active', v === 'AM');
+  document.getElementById('pm-btn').classList.toggle('active', v === 'PM');
+  updateTime();
+}
+function updateTime() {
+  let h = parseInt(document.getElementById('t-hour').value) || 8;
+  let m = parseInt(document.getElementById('t-min').value) || 0;
+  if (h < 1) h = 1; if (h > 12) h = 12;
+  if (m < 0) m = 0; if (m > 59) m = 59;
+  document.getElementById('t-hour').value = h;
+  document.getElementById('t-min').value = String(m).padStart(2,'0');
+  document.getElementById('time-display').textContent = `${h}:${String(m).padStart(2,'0')} ${ampm}`;
+  showToast(`Notification time set to ${h}:${String(m).padStart(2,'0')} ${ampm}`);
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
 </script>
 </body>
 </html>

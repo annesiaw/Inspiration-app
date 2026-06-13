@@ -6,6 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../components/Header';
 import InspirationCard from '../components/InspirationCard';
+import FigureCard from '../components/FigureCard';
 import FactCard from '../components/FactCard';
 import { fetchDailyContent } from '../services/api';
 import { colors } from '../constants/colors';
@@ -24,7 +25,7 @@ export default function HomeScreen() {
     try {
       const data = await fetchDailyContent();
       setContent(data);
-    } catch (err) {
+    } catch {
       setError('Could not load today\'s content.\nCheck your connection and try again.');
     } finally {
       setLoading(false);
@@ -32,9 +33,7 @@ export default function HomeScreen() {
     }
   }, []);
 
-  useEffect(() => {
-    loadContent();
-  }, [loadContent]);
+  useEffect(() => { loadContent(); }, [loadContent]);
 
   if (loading) {
     return (
@@ -76,62 +75,23 @@ export default function HomeScreen() {
         }
       >
         <Header date={content?.date} />
-        <InspirationCard inspiration={content?.inspiration} />
-        <FactCard fact={content?.fact} />
-        <Text style={styles.footer}>Pull down to refresh</Text>
+        <InspirationCard inspiration={content?.inspiration} date={content?.date} />
+        <FigureCard figure={content?.figure} date={content?.date} />
+        <FactCard fact={content?.fact} date={content?.date} />
+        <Text style={styles.footer}>Pull down to refresh · Tap ♡ to save</Text>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scroll: {
-    paddingBottom: 32,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  loadingText: {
-    marginTop: 16,
-    color: colors.textSecondary,
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  errorEmoji: {
-    fontSize: 48,
-    marginBottom: 16,
-  },
-  errorText: {
-    color: colors.textSecondary,
-    fontSize: 14,
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 24,
-  },
-  retryButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 28,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: colors.gold,
-  },
-  retryText: {
-    color: colors.gold,
-    fontSize: 13,
-    letterSpacing: 1,
-  },
-  footer: {
-    textAlign: 'center',
-    color: colors.textMuted,
-    fontSize: 11,
-    marginTop: 16,
-    letterSpacing: 1,
-  },
+  container: { flex: 1, backgroundColor: colors.background },
+  scroll: { paddingBottom: 32 },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
+  loadingText: { marginTop: 16, color: colors.textSecondary, fontSize: 14, textAlign: 'center' },
+  errorEmoji: { fontSize: 48, marginBottom: 16 },
+  errorText: { color: colors.textSecondary, fontSize: 14, textAlign: 'center', lineHeight: 22, marginBottom: 24 },
+  retryButton: { paddingVertical: 10, paddingHorizontal: 28, borderRadius: 24, borderWidth: 1, borderColor: colors.gold },
+  retryText: { color: colors.gold, fontSize: 13, letterSpacing: 1 },
+  footer: { textAlign: 'center', color: colors.textMuted, fontSize: 11, marginTop: 16, letterSpacing: 0.5 },
 });

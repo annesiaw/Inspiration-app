@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const contentRouter = require('./routes/content');
 const tokensRouter = require('./routes/tokens');
+const archiveRouter = require('./routes/archive');
 const { startScheduler } = require('./services/scheduler');
 
 const app = express();
@@ -17,6 +18,7 @@ app.get('/health', (req, res) => {
 
 app.use('/api/content', contentRouter);
 app.use('/api/tokens', tokensRouter);
+app.use('/api/archive', archiveRouter);
 
 app.listen(PORT, () => {
   console.log(`Inspiration App backend running on port ${PORT}`);
