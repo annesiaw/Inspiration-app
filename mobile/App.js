@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -8,18 +9,33 @@ import HomeScreen from './src/screens/HomeScreen';
 import FavoritesScreen from './src/screens/FavoritesScreen';
 import ArchiveScreen from './src/screens/ArchiveScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import SchedulerScreen from './src/screens/SchedulerScreen';
+import CreatePostScreen from './src/screens/CreatePostScreen';
+import SocialAccountsScreen from './src/screens/SocialAccountsScreen';
 import { FavoritesProvider } from './src/context/FavoritesContext';
 import { requestPermissionsAndRegister, useNotificationListeners } from './src/services/notifications';
 import { colors } from './src/constants/colors';
 
 const Tab = createBottomTabNavigator();
+const SchedulerStack = createNativeStackNavigator();
 
 const ICONS = {
   Home:      ['home', 'home-outline'],
   Favorites: ['heart', 'heart-outline'],
   Archive:   ['time', 'time-outline'],
+  Scheduler: ['calendar', 'calendar-outline'],
   Settings:  ['settings', 'settings-outline'],
 };
+
+function SchedulerStackScreen() {
+  return (
+    <SchedulerStack.Navigator screenOptions={{ headerShown: false }}>
+      <SchedulerStack.Screen name="SchedulerList" component={SchedulerScreen} />
+      <SchedulerStack.Screen name="CreatePost" component={CreatePostScreen} />
+      <SchedulerStack.Screen name="SocialAccounts" component={SocialAccountsScreen} />
+    </SchedulerStack.Navigator>
+  );
+}
 
 export default function App() {
   const navigationRef = useRef(null);
@@ -70,6 +86,7 @@ export default function App() {
           <Tab.Screen name="Home" component={HomeScreen} />
           <Tab.Screen name="Favorites" component={FavoritesScreen} />
           <Tab.Screen name="Archive" component={ArchiveScreen} />
+          <Tab.Screen name="Scheduler" component={SchedulerStackScreen} />
           <Tab.Screen name="Settings" component={SettingsScreen} />
         </Tab.Navigator>
       </NavigationContainer>
