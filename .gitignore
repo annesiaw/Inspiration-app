@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Expo / React Native
+.expo/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Backend data (credentials and posts are runtime data, not source)
+backend/data/social_credentials.json
+backend/data/scheduled_posts.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
